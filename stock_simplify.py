@@ -1477,7 +1477,9 @@ def _parse_rss(content: bytes) -> list[dict]:
 # GUI — MAIN APPLICATION
 # ══════════════════════════════════════════════════════════════════════════════
 
-class EdgarApp(tk.Frame):
+_AppBase = tk.Frame if _TK_AVAILABLE else object  # noqa: E305
+
+class EdgarApp(_AppBase):
     C = {
         "bg":          "#000000",
         "header_bg":   "#000000",
@@ -4558,6 +4560,10 @@ def main() -> None:
     if len(sys.argv) > 1:
         _run_cli(_parse_args())
     else:
+        if not _TK_AVAILABLE:
+            print("tkinter is not available in this environment. "
+                  "Run with CLI arguments or use the web app at simplified-stocks.com")
+            return
         root = tk.Tk()
         root.title("Stocks-Simplified — Financial disclosures of publicly listed companies on the NYSE and NASDAQ")
         root.geometry("1120x740")
