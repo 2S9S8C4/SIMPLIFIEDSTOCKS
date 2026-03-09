@@ -52,8 +52,16 @@ from pathlib import Path
 from typing import Optional
 
 import requests
-import tkinter as tk
-from tkinter import ttk, messagebox
+
+try:
+    import tkinter as tk
+    from tkinter import ttk, messagebox
+    _TK_AVAILABLE = True
+except ImportError:
+    tk = None           # type: ignore[assignment]
+    ttk = None          # type: ignore[assignment]
+    messagebox = None   # type: ignore[assignment]
+    _TK_AVAILABLE = False
 
 try:
     from bs4 import BeautifulSoup  # type: ignore[import-untyped]
@@ -64,12 +72,13 @@ except ImportError:
 
 try:
     import matplotlib
-    matplotlib.use("TkAgg")
+    if _TK_AVAILABLE:
+        matplotlib.use("TkAgg")
     from matplotlib.figure import Figure
     from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
     import matplotlib.ticker as mticker
     _MPL_AVAILABLE = True
-except ImportError:
+except Exception:
     Figure = None           # type: ignore[assignment,misc]
     FigureCanvasTkAgg = None  # type: ignore[assignment,misc]
     mticker = None          # type: ignore[assignment]
